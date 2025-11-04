@@ -1,18 +1,21 @@
 # Kasir Super App
 
-<img src="assets/images/thumbnail.png"/>
+<img src="assets/images/logo.png"/>
 
 -- 
 
-Introducing the Project Cashier Application, equipped to handle QRIS Payments (Indonesian Payment QR Code Standard) and 
-seamlessly integrate with Bluetooth Printers for quick and efficient invoice printing.
+Memperkenalkan Three Kasir. Aplikasi kasir yang mudah digunakan orang awam dan gratis.
 
-This project was result from online courses on **KodingWorks** ([Check this out](https://kodingworks.io/))
+Feature:
+- Cetak seri
+- Customable produk (add/remove)
+- Analisis chart pemasukan
+- Export analisis pemasukan lewat file excell.
+- Mutasi keuangan
 
 -- 
-
-## Regards
-**Koding Works** ([Alamat nya disini](https://kodingworks.io/))
 
 ## Author(s)
-**Tedo Haris Chandra** ([Follow my Instagram](https://instagram.com/dooooo.dev))
+
+**Tedo Haris Chandra** - for UI/UX
+**Aimnopq** - full backend
