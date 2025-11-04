@@ -1,0 +1,50 @@
+buildscript {
+    ext.kotlin_version = '2.1.0'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+           classpath 'com.android.tools.build:gradle:8.6.0'
+           classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+// Workaround: set namespace for plugin modules coming from pub cache that don't specify namespace
+// This avoids the AGP error: "Namespace not specified" for modules such as flutter_bluetooth_basic
+gradle.projectsEvaluated {
+    rootProject.subprojects.each { proj ->
+        if (proj.name == 'flutter_bluetooth_basic') {
+            try {
+                def androidExt = proj.extensions.findByName('android')
+                if (androidExt != null) {
+                    // Choose a safe namespace for the plugin module. Adjust if you know the plugin's package.
+                    androidExt.namespace = 'com.example.flutter_bluetooth_basic'
+                    println "[build.gradle] Set namespace for ${proj.name} to ${androidExt.namespace}"
+                }
+            } catch(Exception e) {
+                println "[build.gradle] Could not set namespace for ${proj.name}: ${e}"
+            }
+        }
+    }
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
