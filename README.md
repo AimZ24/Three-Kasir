@@ -18,4 +18,5 @@ Feature:
 ## Author(s)
 
 **Tedo Haris Chandra** - for UI/UX
+
 **Aimnopq** - full backend
