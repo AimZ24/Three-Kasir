@@ -12,6 +12,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<LoadTransactions>(_onLoadTransactions);
     on<AddTransaction>(_onAddTransaction);
     on<UpdateTransactionStatus>(_onUpdateTransactionStatus);
+    on<DeleteTransaction>(_onDeleteTransaction);
   }
 
   void _onLoadTransactions(
@@ -74,6 +75,31 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         return transaction;
       }).toList();
 
+      await TransactionLocalStorage.saveTransactions(updatedTransactions);
+      emit(state.copyWith(
+        status: Status.success,
+        transactions: updatedTransactions,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: Status.failure,
+        error: e.toString(),
+      ));
+    }
+  }
+
+  void _onDeleteTransaction(
+    DeleteTransaction event,
+    Emitter<TransactionState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: Status.loading));
+      
+      final updatedTransactions = state.transactions
+          .where((transaction) => transaction.id != event.transactionId)
+          .toList();
+      
+      await TransactionLocalStorage.saveTransactions(updatedTransactions);
       emit(state.copyWith(
         status: Status.success,
         transactions: updatedTransactions,

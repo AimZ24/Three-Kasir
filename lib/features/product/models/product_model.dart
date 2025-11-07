@@ -3,6 +3,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'product_model.g.dart';
 
+enum ProductStatus {
+  active,
+  inactive,
+  outOfStock
+}
+
 @JsonSerializable()
 class ProductModel extends Equatable {
   final String id;
@@ -10,6 +16,11 @@ class ProductModel extends Equatable {
   final double price;
   final String? imageUrl;
   final String? description;
+  final String? barcode; // Barcode for product
+  final int stock; // Stock quantity
+  final bool trackStock; // Whether to track stock for this product
+  final ProductStatus status; // Product status
+  final int? minStock; // Minimum stock threshold for alerts
 
   const ProductModel({
     required this.id,
@@ -17,7 +28,25 @@ class ProductModel extends Equatable {
     required this.price,
     this.imageUrl,
     this.description,
+    this.barcode,
+    this.stock = 0,
+    this.trackStock = false,
+    this.status = ProductStatus.active,
+    this.minStock,
   });
+
+  // Check if product is available for sale
+  bool get isAvailable {
+    if (status == ProductStatus.inactive) return false;
+    if (trackStock && stock <= 0) return false;
+    return true;
+  }
+
+  // Check if stock is low
+  bool get isLowStock {
+    if (!trackStock || minStock == null) return false;
+    return stock <= minStock! && stock > 0;
+  }
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>
       _$ProductModelFromJson(json);
@@ -30,6 +59,11 @@ class ProductModel extends Equatable {
     double? price,
     String? imageUrl,
     String? description,
+    String? barcode,
+    int? stock,
+    bool? trackStock,
+    ProductStatus? status,
+    int? minStock,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -37,9 +71,14 @@ class ProductModel extends Equatable {
       price: price ?? this.price,
       imageUrl: imageUrl ?? this.imageUrl,
       description: description ?? this.description,
+      barcode: barcode ?? this.barcode,
+      stock: stock ?? this.stock,
+      trackStock: trackStock ?? this.trackStock,
+      status: status ?? this.status,
+      minStock: minStock ?? this.minStock,
     );
   }
 
   @override
-  List<Object?> get props => [id, name, price, imageUrl, description];
+  List<Object?> get props => [id, name, price, imageUrl, description, barcode, stock, trackStock, status, minStock];
 }

@@ -21,13 +21,22 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => ProductBloc()),
         BlocProvider(create: (context) => CartBloc()),
         BlocProvider(create: (context) => TransactionBloc()),
+        BlocProvider(
+          create: (context) => ThemeBloc()..add(const LoadThemeEvent()),
+        ),
       ],
-      child: MaterialApp(
-        title: 'Kasir Super',
-        debugShowCheckedModeBanner: false,
-  theme: LightTheme(AppColors.blue).theme,
-        home: const SplashScreen(),
-        onGenerateRoute: routes,
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, themeState) {
+          return MaterialApp(
+            title: 'Kasir Super',
+            debugShowCheckedModeBanner: false,
+            theme: LightTheme(AppColors.blue).theme,
+            darkTheme: DarkTheme(AppColors.blue).theme,
+            themeMode: themeState.themeMode,
+            home: const SplashScreen(),
+            onGenerateRoute: routes,
+          );
+        },
       ),
     );
   }

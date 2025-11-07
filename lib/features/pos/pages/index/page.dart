@@ -5,6 +5,7 @@ import 'package:kasirsuper/features/pos/blocs/cart/cart_bloc.dart';
 import 'package:kasirsuper/features/product/blocs/product/product_bloc.dart';
 import 'package:kasirsuper/features/transaction/blocs/transaction/transaction_bloc.dart';
 import 'package:kasirsuper/features/transaction/models/transaction_model.dart';
+import 'package:kasirsuper/features/pos/pages/barcode_scanner/page.dart';
 
 part 'sections/cart_section.dart';
 part 'sections/product_section.dart';
@@ -29,6 +30,45 @@ class _POSPageState extends State<POSPage> {
       appBar: AppBar(
         title: const Text('Point of Sale'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.qr_code_scanner),
+            tooltip: 'Scan Barcode',
+            onPressed: () async {
+              final barcode = await Navigator.push<String>(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BarcodeScannerPage(),
+                ),
+              );
+              
+              if (barcode != null && mounted) {
+                // Find product by barcode
+                final productState = context.read<ProductBloc>().state;
+                try {
+                  final product = productState.products.firstWhere(
+                    (p) => p.barcode == barcode,
+                  );
+                  
+                  // Add to cart
+                  context.read<CartBloc>().add(AddToCart(product));
+                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('${product.name} ditambahkan ke keranjang'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Produk tidak ditemukan'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.delete_outline),
             onPressed: () {
