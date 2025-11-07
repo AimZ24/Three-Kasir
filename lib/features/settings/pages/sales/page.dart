@@ -7,6 +7,11 @@ import 'package:kasirsuper/features/transaction/data/transaction_storage.dart';
 import 'package:kasirsuper/features/transaction/models/transaction_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:cross_file/cross_file.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:convert';
+import 'package:kasirsuper/utils/download_helper.dart';
 
 class SalesDataPage extends StatefulWidget {
   const SalesDataPage({super.key});
@@ -41,7 +46,6 @@ class _SalesDataPageState extends State<SalesDataPage> {
     final Map<String, double> map = {};
     final now = DateTime.now();
     if (_mode == 'weekly') {
-      // last 7 days
       for (int i = 6; i >= 0; i--) {
         final d = DateTime(now.year, now.month, now.day).subtract(Duration(days: i));
         final key = DateFormat('yyyy-MM-dd').format(d);
@@ -53,8 +57,16 @@ class _SalesDataPageState extends State<SalesDataPage> {
           map[dateKey] = map[dateKey]! + t.total;
         }
       }
+    } else if (_mode == 'range' && _range != null) {
+      final start = _range!.start;
+      final end = _range!.end.add(const Duration(days: 1));
+      for (final t in _transactions) {
+        if (t.date.isAfter(start.subtract(const Duration(seconds: 1))) && t.date.isBefore(end)) {
+          final key = DateFormat('yyyy-MM-dd').format(t.date);
+          map[key] = (map[key] ?? 0) + t.total;
+        }
+      }
     } else {
-      // monthly: last 6 months including current
       for (int i = 5; i >= 0; i--) {
         final d = DateTime(now.year, now.month - i, 1);
         final key = DateFormat('yyyy-MM').format(d);
@@ -119,10 +131,30 @@ class _SalesDataPageState extends State<SalesDataPage> {
 
       final now = DateTime.now();
       final fileName = 'sales_export_${_mode}_${DateFormat('yyyyMMdd_HHmmss').format(now)}.xlsx';
-      final file = File('${targetDir.path}/$fileName');
-      await file.writeAsString(sb.toString());
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Export tersimpan: ${file.path}')));
+      final content = sb.toString();
+      if (kIsWeb) {
+        // trigger web download
+        final bytes = utf8.encode(content);
+        try {
+          await downloadFile(fileName, bytes);
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Download dimulai')));
+        } catch (e) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal mendownload: $e')));
+        }
+      } else {
+        final file = File('${targetDir.path}/$fileName');
+        await file.writeAsString(content);
+        // share the file so user sees it / can open it immediately
+        try {
+          await Share.shareXFiles([XFile(file.path)], text: 'Export data penjualan');
+        } catch (_) {
+          // fallback: show path saved
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Export tersimpan: ${file.path}')));
+        }
+      }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal mengekspor XLSX: $e')));

@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:kasirsuper/core/core.dart';
 import 'package:kasirsuper/features/product/blocs/product/product_bloc.dart';
 import 'package:kasirsuper/features/product/models/product_model.dart';
@@ -21,16 +25,20 @@ class _AddEditProductPageState extends State<AddEditProductPage> {
   late final TextEditingController _priceController;
   late final TextEditingController _descriptionController;
 
+  String? _imagePath;
+
   bool get isEditing => widget.product != null;
 
   @override
   void initState() {
     super.initState();
-  _nameController = TextEditingController(text: widget.product?.name);
-  _priceController = TextEditingController(
-    text: widget.product?.price.toString() ?? '0');
-  _descriptionController = TextEditingController(
-    text: widget.product?.description);
+    _nameController = TextEditingController(text: widget.product?.name);
+    _priceController = TextEditingController(
+        text: widget.product?.price.toString() ?? '0');
+    _descriptionController = TextEditingController(
+        text: widget.product?.description);
+    // If editing, preload existing image path so preview is shown
+    _imagePath = widget.product?.imageUrl;
   }
 
   @override
@@ -41,23 +49,60 @@ class _AddEditProductPageState extends State<AddEditProductPage> {
     super.dispose();
   }
 
-  void _submitForm() {
-    if (_formKey.currentState?.validate() ?? false) {
-      final product = ProductModel(
-        id: widget.product?.id ?? DateTime.now().toString(),
-        name: _nameController.text,
-        price: double.parse(_priceController.text),
-        description: _descriptionController.text,
-      );
-
-      if (isEditing) {
-        context.read<ProductBloc>().add(UpdateProduct(product));
-      } else {
-        context.read<ProductBloc>().add(AddProduct(product));
-      }
-
-      Navigator.pop(context);
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imagePath = pickedFile.path;
+      });
     }
+  }
+
+  Future<void> _submitForm() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    String? imageUrl;
+    if (_imagePath != null && !(_imagePath!.startsWith('http'))) {
+      try {
+        final id = widget.product?.id ?? DateTime.now().toString();
+        final src = File(_imagePath!);
+        if (await src.exists()) {
+          final d = await getApplicationDocumentsDirectory();
+          final imagesDir = Directory('${d.path}/product_images');
+          if (!await imagesDir.exists()) await imagesDir.create(recursive: true);
+          final ext = _imagePath!.split('.').last;
+          final dest = File('${imagesDir.path}/$id.$ext');
+          try {
+            await src.copy(dest.path);
+            imageUrl = dest.path;
+          } catch (_) {
+            imageUrl = _imagePath;
+          }
+        } else {
+          imageUrl = widget.product?.imageUrl;
+        }
+      } catch (_) {
+        imageUrl = widget.product?.imageUrl;
+      }
+    } else {
+      imageUrl = widget.product?.imageUrl;
+    }
+
+    final product = ProductModel(
+      id: widget.product?.id ?? DateTime.now().toString(),
+      name: _nameController.text,
+      price: double.parse(_priceController.text),
+      imageUrl: imageUrl,
+      description: _descriptionController.text,
+    );
+
+    if (isEditing) {
+      context.read<ProductBloc>().add(UpdateProduct(product));
+    } else {
+      context.read<ProductBloc>().add(AddProduct(product));
+    }
+
+    if (mounted) Navigator.pop(context);
   }
 
   @override
@@ -109,6 +154,18 @@ class _AddEditProductPageState extends State<AddEditProductPage> {
                 border: OutlineInputBorder(),
               ),
               maxLines: 3,
+            ),
+            const SizedBox(height: 16),
+            if (_imagePath != null)
+              Image.file(
+                File(_imagePath!),
+                height: 150,
+                fit: BoxFit.cover,
+              ),
+            TextButton.icon(
+              onPressed: _pickImage,
+              icon: const Icon(Icons.image),
+              label: const Text('Unggah Gambar (Opsional)'),
             ),
             const SizedBox(height: 24),
             ElevatedButton(

@@ -8,8 +8,20 @@ import 'package:kasirsuper/features/product/blocs/product/product_bloc.dart';
 
 part 'sections/card_section.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<TransactionBloc>().add(LoadTransactions());
+    context.read<ProductBloc>().add(LoadProducts());
+  }
 
   @override
   Widget build(BuildContext context) {

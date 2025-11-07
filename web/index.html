@@ -17,6 +17,7 @@
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
 
@@ -38,6 +39,28 @@
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
+  <style>
+    /* Workaround: scale up Flutter canvas on large desktop screens where app looks too small */
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body { -webkit-font-smoothing: antialiased; }
+    @media (min-width: 1200px) {
+      /* increase zoom slightly on very wide screens */
+      body { zoom: 1.35; }
+    }
+  </style>
+  <script>
+    // If you prefer dynamic scaling based on window size, uncomment below.
+    /*
+    function adjustZoom() {
+      const w = window.innerWidth;
+      if (w >= 1600) document.body.style.zoom = '1.5';
+      else if (w >= 1200) document.body.style.zoom = '1.35';
+      else document.body.style.zoom = '1';
+    }
+    window.addEventListener('resize', adjustZoom);
+    window.addEventListener('load', adjustZoom);
+    */
+  </script>
 </head>
 <body>
   <script>

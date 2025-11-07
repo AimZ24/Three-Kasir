@@ -44,13 +44,17 @@ dependencies:
   esc_pos_utils: ^1.1.0
   path_provider: ^2.0.14
   intl: ^0.18.1
+  image_picker: ^0.8.9
+  permission_handler: ^12.0.1
+  share_plus: ^12.0.1
   # fl_chart removed because the installed Flutter SDK is incompatible with
   # recent fl_chart versions (they use newer MediaQuery APIs). A small
   # in-app CustomPainter bar chart is used instead in the sales page.
   # Bump permission_handler to a newer major release compatible with the
   # forced platform implementation override. This resolves v1 embedding
   # references in transitive platform packages.
-  permission_handler: ^12.0.1
+  # Removed flutter_blue to resolve Gradle configuration issues
+  # esc_pos_bluetooth removed to avoid pulling in legacy Android plugins that break build
   
 
 dev_dependencies:
