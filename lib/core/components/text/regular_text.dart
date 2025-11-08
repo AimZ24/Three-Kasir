@@ -7,31 +7,39 @@ class RegularText extends StatelessWidget {
     super.key,
     this.style,
     this.textAlign,
+    this.overflow,
+    this.maxLines,
   });
 
   final String text;
   final TextStyle? style;
   final TextAlign? textAlign;
+  final TextOverflow? overflow;
+  final int? maxLines;
 
   factory RegularText.medium(String text,
-      {TextStyle? style, TextAlign? textAlign}) {
+      {TextStyle? style, TextAlign? textAlign, TextOverflow? overflow, int? maxLines}) {
     return RegularText(
       text,
       style: const TextStyle(
         fontWeight: FontWeight.w500,
       ).merge(style),
       textAlign: textAlign ?? TextAlign.start,
+      overflow: overflow,
+      maxLines: maxLines,
     );
   }
 
   factory RegularText.semiBold(String text,
-      {TextStyle? style, TextAlign? textAlign}) {
+      {TextStyle? style, TextAlign? textAlign, TextOverflow? overflow, int? maxLines}) {
     return RegularText(
       text,
       style: const TextStyle(
         fontWeight: FontWeight.w600,
       ).merge(style),
       textAlign: textAlign ?? TextAlign.start,
+      overflow: overflow,
+      maxLines: maxLines,
     );
   }
 
@@ -43,6 +51,8 @@ class RegularText extends StatelessWidget {
       text,
       style: baseStyle?.merge(style),
       textAlign: textAlign,
+      overflow: overflow,
+      maxLines: maxLines,
     );
   }
 }

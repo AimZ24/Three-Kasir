@@ -74,10 +74,11 @@ class _ProductSection extends StatelessWidget {
                                           fit: BoxFit.cover,
                                         )
                                       : Container(
-                                          color: Colors.grey[200],
-                                          child: const Icon(
+                                          color: context.theme.cardColor,
+                                          child: Icon(
                                             Icons.image,
                                             size: 48,
+                                            color: context.theme.iconTheme.color?.withOpacity(0.5),
                                           ),
                                         ),
                                 ),
@@ -85,8 +86,9 @@ class _ProductSection extends StatelessWidget {
                               const SizedBox(height: Dimens.dp8),
                               Text(
                                 product.name,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
+                                  color: context.theme.textTheme.bodyLarge?.color,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,

@@ -11,6 +11,7 @@ import 'package:kasirsuper/features/settings/pages/printer/page.dart';
 import 'package:kasirsuper/features/settings/pages/receipt/page.dart';
 import 'package:kasirsuper/features/settings/pages/privacy/page.dart';
 import 'package:kasirsuper/features/settings/pages/sales/page.dart';
+import 'package:kasirsuper/features/settings/pages/theme/page.dart';
 
 Route<dynamic> routes(settings) {
   switch (settings.name) {
@@ -55,6 +56,10 @@ Route<dynamic> routes(settings) {
     case PrivacyPolicyPage.routeName:
       return MaterialPageRoute(
         builder: (_) => const PrivacyPolicyPage(),
+      );
+    case ThemeSettingsPage.routeName:
+      return MaterialPageRoute(
+        builder: (_) => const ThemeSettingsPage(),
       );
     default:
       return MaterialPageRoute(builder: (context) {

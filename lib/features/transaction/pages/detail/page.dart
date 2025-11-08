@@ -46,9 +46,32 @@ class TransactionDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SubtitleText('ID: TRX-${transaction.id}'),
-            const SizedBox(height: 8),
-            RegularText('Date: ${transaction.date}'),
+            Card(
+              elevation: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(Dimens.dp16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SubtitleText('ID Transaksi'),
+                        SubtitleText(
+                          transaction.id,
+                          style: TextStyle(
+                            color: context.theme.primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    RegularText('Tanggal: ${transaction.date}'),
+                  ],
+                ),
+              ),
+            ),
             const SizedBox(height: 12),
             const Divider(),
             Expanded(

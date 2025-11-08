@@ -35,11 +35,15 @@ class _ProfileSectionState extends State<_ProfileSection> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(Dimens.dp50),
-            child: Image.network(
-              'https://www.google.com/imgres?q=davina%20karamoy&imgurl=https%3A%2F%2Fcdns.klimg.com%2Fkapanlagi.com%2Fp%2Fdavinakaramoy7.jpg&imgrefurl=https%3A%2F%2Fwww.kapanlagi.com%2Fshowbiz%2Fselebriti%2Fprofil-dan-biodata-davina-karamoy-artis-cantik-yang-berubah-antagonis-di-film-ipar-adalah-maut-55e2d4.html&docid=QIujDkIYwLhgJM&tbnid=3TwaISB0xIki4M&vet=12ahUKEwifs-PJ2tOQAxWs-jgGHaOyL6kQM3oECBcQAA..i&w=1080&h=1350&hcb=2&ved=2ahUKEwifs-PJ2tOQAxWs-jgGHaOyL6kQM3oECBcQAA',
+            child: Container(
               width: 64,
               height: 64,
-              fit: BoxFit.cover,
+              color: context.theme.primaryColor.withAlpha((0.2 * 255).round()),
+              child: Icon(
+                Icons.person,
+                size: 40,
+                color: context.theme.primaryColor,
+              ),
             ),
           ),
           Dimens.dp16.width,
@@ -54,6 +58,7 @@ class _ProfileSectionState extends State<_ProfileSection> {
                   style: const TextStyle(
                     fontSize: Dimens.dp12,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
                 Dimens.dp4.height,
                 RegularText(
@@ -61,6 +66,7 @@ class _ProfileSectionState extends State<_ProfileSection> {
                   style: const TextStyle(
                     fontSize: Dimens.dp12,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

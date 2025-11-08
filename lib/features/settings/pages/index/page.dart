@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:kasirsuper/features/settings/pages/printer/page.dart';
 import 'package:kasirsuper/features/settings/settings.dart';
 import 'package:kasirsuper/features/settings/pages/sales/page.dart';
+import 'package:kasirsuper/features/settings/pages/theme/page.dart';
 
 part 'sections/profile_section.dart';
 
@@ -23,6 +24,25 @@ class SettingPage extends StatelessWidget {
           
           // Profile section above is the account area. Removed duplicate
           // 'Informasi Usaha' and 'API Key Xendit' as requested.
+          const Divider(
+            thickness: Dimens.dp8,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(Dimens.dp16),
+                child: RegularText.semiBold('Tampilan'),
+              ),
+              ItemMenuSetting(
+                title: 'Theme Mode',
+                icon: Icons.brightness_6,
+                onTap: () {
+                  Navigator.pushNamed(context, ThemeSettingsPage.routeName);
+                },
+              ),
+            ],
+          ),
           const Divider(
             thickness: Dimens.dp8,
           ),

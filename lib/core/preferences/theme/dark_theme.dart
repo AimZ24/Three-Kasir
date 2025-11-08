@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:kasirsuper/core/core.dart';
 
-class LightTheme {
+class DarkTheme {
   final Color primaryColor;
   final Color errorColor = AppColors.red;
-  final Color scaffoldColor = AppColors.white[200]!;
-  final Color textSolidColor = AppColors.black;
-  final Color borderColor = AppColors.white;
-  final Color textDisabledColor = AppColors.textDisabled;
-  final Color inputColor = AppColors.white[200]!;
+  final Color scaffoldColor = const Color(0xFF121212);
+  final Color textSolidColor = AppColors.white;
+  final Color borderColor = const Color(0xFF2C2C2C);
+  final Color textDisabledColor = const Color(0xFF757575);
+  final Color inputColor = const Color(0xFF1E1E1E);
 
   TextTheme get textTheme => TextTheme(
         headlineLarge: TextStyle(
@@ -53,20 +53,21 @@ class LightTheme {
         ),
       );
 
-  LightTheme(this.primaryColor);
+  DarkTheme(this.primaryColor);
 
   CardThemeData get cardTheme => CardThemeData(
-  elevation: 0,
-  margin: EdgeInsets.zero,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(Dimens.dp8),
-    side: BorderSide(color: borderColor),
-  ),
-);
-
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        color: inputColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Dimens.dp8),
+          side: BorderSide(color: borderColor),
+        ),
+      );
 
   AppBarTheme get appBarTheme => AppBarTheme(
         centerTitle: false,
+        backgroundColor: scaffoldColor,
         surfaceTintColor: scaffoldColor,
         shadowColor: Colors.black.withAlpha((0.4 * 255).round()),
       );
@@ -74,7 +75,9 @@ class LightTheme {
   BottomNavigationBarThemeData get bottomNavigationBarTheme {
     return BottomNavigationBarThemeData(
       type: BottomNavigationBarType.fixed,
+      backgroundColor: inputColor,
       selectedItemColor: primaryColor,
+      unselectedItemColor: textDisabledColor,
       selectedLabelStyle: textTheme.labelMedium?.copyWith(
         fontSize: Dimens.dp10,
         color: primaryColor,
@@ -93,7 +96,7 @@ class LightTheme {
           borderRadius: BorderRadius.circular(Dimens.dp8),
         ),
         backgroundColor: primaryColor,
-        foregroundColor: Colors.white, // White text for contrast
+        foregroundColor: Colors.white, // White text for dark mode
         textStyle: textTheme.titleMedium,
       ),
     );
@@ -123,11 +126,11 @@ class LightTheme {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(Dimens.dp8),
-        borderSide: BorderSide(color: inputColor),
+        borderSide: BorderSide(color: borderColor),
       ),
       disabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(Dimens.dp8),
-        borderSide: BorderSide(color: inputColor),
+        borderSide: BorderSide(color: borderColor),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(Dimens.dp8),
@@ -145,8 +148,8 @@ class LightTheme {
   }
 
   DividerThemeData get dividerTheme {
-    return const DividerThemeData(
-      color: AppColors.white,
+    return DividerThemeData(
+      color: borderColor,
     );
   }
 
@@ -154,10 +157,11 @@ class LightTheme {
     return ThemeData(
       primaryColor: primaryColor,
       fontFamily: 'Poppins',
-      colorScheme: ColorScheme.light(
+      colorScheme: ColorScheme.dark(
         primary: primaryColor,
         secondary: primaryColor,
         error: errorColor,
+        surface: scaffoldColor,
       ),
       scaffoldBackgroundColor: scaffoldColor,
       useMaterial3: true,

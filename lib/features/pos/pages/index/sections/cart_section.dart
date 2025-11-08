@@ -7,10 +7,10 @@ class _CartSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[100],
+        color: context.theme.scaffoldBackgroundColor,
         border: Border(
           left: BorderSide(
-            color: Colors.grey[300]!,
+            color: context.theme.dividerColor,
           ),
         ),
       ),
@@ -20,8 +20,11 @@ class _CartSection extends StatelessWidget {
             child: BlocBuilder<CartBloc, CartState>(
               builder: (context, state) {
                 if (state.items.isEmpty) {
-                  return const Center(
-                    child: Text('Keranjang kosong'),
+                  return Center(
+                    child: Text(
+                      'Keranjang kosong',
+                      style: TextStyle(color: context.theme.textTheme.bodyMedium?.color),
+                    ),
                   );
                 }
 
@@ -40,8 +43,9 @@ class _CartSection extends StatelessWidget {
                             children: [
                               Text(
                                 item.product.name,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
+                                  color: context.theme.textTheme.bodyLarge?.color,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -70,8 +74,9 @@ class _CartSection extends StatelessWidget {
                             ),
                             Text(
                               item.quantity.toString(),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
+                                color: context.theme.textTheme.bodyLarge?.color,
                               ),
                             ),
                             IconButton(
@@ -98,10 +103,10 @@ class _CartSection extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(Dimens.defaultSize),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.theme.cardColor,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: context.theme.shadowColor.withOpacity(0.1),
                   spreadRadius: 1,
                   blurRadius: 4,
                   offset: const Offset(0, -2),
@@ -116,11 +121,12 @@ class _CartSection extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Total',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            color: context.theme.textTheme.bodyLarge?.color,
                           ),
                         ),
                         Text(
@@ -152,9 +158,10 @@ class _CartSection extends StatelessWidget {
                                       child: const Text('Batal'),
                                     ),
                                     TextButton(
-                                      onPressed: () {
+                                      onPressed: () async {
+                                        final transactionId = await IdGenerator.generateTransactionId();
                                         final transaction = TransactionModel(
-                                          id: DateTime.now().toString(),
+                                          id: transactionId,
                                           date: DateTime.now(),
                                           items: state.items,
                                           total: state.total,
